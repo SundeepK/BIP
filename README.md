@@ -6,10 +6,10 @@ These same settings can then be applied to multiple different images in the same
 Current feature:
 * 
 
-Future:
+Future: 
 *
 
-Bugs:
+Bugs: 
 *
 
 Performance:
