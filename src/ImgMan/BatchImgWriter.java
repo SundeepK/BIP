@@ -23,7 +23,7 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 
 	private ArrayBlockingQueue<File> FileBlockingQueue;
 	private JLabel resultLabel = new JLabel();
-
+	private String OUTPUT_FOLDER = "\\BIP_OUT\\" ;
 	private float hue;
 	private float saturation;
 	private float brightness;
@@ -32,12 +32,13 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 	private int progress;
 	private Component component;
 		
-	public BatchImgWriter( ArrayBlockingQueue<File> FileBlockingQueue, float hue, float saturation, float brightness, Component component){
+	public BatchImgWriter( ArrayBlockingQueue<File> FileBlockingQueue, float hue, float saturation, float brightness, 
+			Component component, String savePath){
 		this.FileBlockingQueue =  FileBlockingQueue;
 		this.hue = hue;
 		this.saturation = saturation;
 		this.brightness = brightness;
-//		this.savePath = savePath;
+		this.savePath = savePath;
 //		progressBar = bar;
 //		progressBar.setMaximum(FileBlockingQueue.size()/4);
 		this.component = component;
@@ -63,6 +64,11 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 		
 		ProgressMonitor monitor = new ProgressMonitor(component, "Progress", "Processing images", 0, FileBlockingQueue.size()/4);
 		
+		//Check if output directory currently exits - if not, create a new one
+		File destinationFolder = new File(savePath + OUTPUT_FOLDER);
+		if(!destinationFolder.exists() && !destinationFolder.mkdir())
+			throw new IOException("Unable to create directory");
+		
 		while(!FileBlockingQueue.isEmpty()){
 		
 		for (int i = 0; i <  4; i++) {
@@ -82,7 +88,7 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 	     		try {
 	     			image = ImageIO.read(new File(file.getAbsoluteFile().toString()));
 	     			image = getEnhancedImagesHSB(image);
-	     			ImageIO.write(image, "png", new File( "C:\\Users\\Sundeep\\Pictures\\newimg\\"+ file.getName() ));
+	     			ImageIO.write(image, "png", new File( savePath + OUTPUT_FOLDER+ file.getName() ));
 //	     			incrementProgress();
 
 	     			} catch (IOException e) {

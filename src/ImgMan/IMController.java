@@ -53,7 +53,7 @@ public class IMController  {
 			}
 			
 			float[] hsb = model.getHSB();
-			BatchImgWriter imgWriter = new BatchImgWriter(abq, hsb[0], hsb[1], hsb[2], view);
+			BatchImgWriter imgWriter = new BatchImgWriter(abq, hsb[0], hsb[1], hsb[2], view, model.getSourceFolder());
 			imgWriter.execute();
 		}
 		
