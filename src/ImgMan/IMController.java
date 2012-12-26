@@ -52,8 +52,8 @@ public class IMController  {
 				}
 			}
 			
-			float[] hsb = model.getHSB();
-			BatchImgWriter imgWriter = new BatchImgWriter(abq, hsb[0], hsb[1], hsb[2], view, model.getSourceFolder());
+			float[] hsb = model.getEnhancedImage().getHSB();
+			BatchImgWriter imgWriter = new BatchImgWriter(abq,model.getEnhancedImage(),  view, model.getSourceFolder());
 			imgWriter.execute();
 		}
 		
@@ -69,7 +69,7 @@ public class IMController  {
 			fileBrowser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 			fileBrowser.showOpenDialog(view);
 			model.setNewSourceFolder(fileBrowser.getSelectedFile().getAbsolutePath(), filter);
-			view.getImagePanel().setImage(model.getImage());
+			view.getImagePanel().setImage(model.getEnhancedImage().getOriginalImage());
 
 			//System.out.println(fileBrowser.getSelectedFile().getAbsolutePath());
 		}
@@ -80,11 +80,11 @@ public class IMController  {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getImage() != null){
+			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getEnhancedImage().getOriginalImage() != null){
 			JSlider slider= ((JSlider)e.getSource());
 			System.out.println((float)slider.getValue());
-			model.setBrightness((float)slider.getValue());
-			view.getImagePanel().setImage(model.getEnhancedImagesHSB());
+			model.getEnhancedImage().setBrightness((float)slider.getValue());
+			view.getImagePanel().setImage(model.getEnhancedImage().getEnhancedImagesHSB());
 			view.getImagePanel().getParent().repaint();		
 			}
 		}
@@ -95,11 +95,11 @@ public class IMController  {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getImage() != null){
+			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getEnhancedImage().getOriginalImage() != null){
 			JSlider slider= ((JSlider)e.getSource());
 			System.out.println((float)slider.getValue());
-			model.setSaturation((float)slider.getValue());
-			view.getImagePanel().setImage(model.getEnhancedImagesHSB());
+			model.getEnhancedImage().setSaturation((float)slider.getValue());
+			view.getImagePanel().setImage(model.getEnhancedImage().getEnhancedImagesHSB());
 			view.getImagePanel().getParent().repaint();		
 			}
 		}
@@ -111,12 +111,12 @@ public class IMController  {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getImage() != null){
+			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getEnhancedImage().getOriginalImage() != null){
 				
 			//Ajdust contrast of image
 				JSlider slider= ((JSlider)e.getSource());
-				model.setContrast(slider.getValue());
-				view.getImagePanel().setImage(model.getEnhancedImages());
+				model.getEnhancedImage().setContrast(slider.getValue());
+				view.getImagePanel().setImage(model.getEnhancedImage().getEnhancedImages());
 				view.getImagePanel().getParent().repaint();		
 			}
 		}
@@ -127,11 +127,11 @@ public class IMController  {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getImage() != null){
+			if(((JSlider) e.getSource()).getValueIsAdjusting() == false && model.getEnhancedImage().getOriginalImage() != null){
 			//Ajdust contrast of image
 				JSlider slider= ((JSlider)e.getSource());
-				model.setHue(slider.getValue());
-				view.getImagePanel().setImage(model.getEnhancedImagesHSB());
+				model.getEnhancedImage().setHue(slider.getValue());
+				view.getImagePanel().setImage(model.getEnhancedImage().getEnhancedImagesHSB());
 				view.getImagePanel().getParent().repaint();		
 			}
 		}

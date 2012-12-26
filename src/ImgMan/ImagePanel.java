@@ -1,5 +1,6 @@
 package ImgMan;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -37,6 +38,7 @@ public class ImagePanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponents(g);
+			
 		g.setColor(Color.red);
 		g.fillRect(0, 0, 400,300);
 		if(image != null){
@@ -47,5 +49,6 @@ public class ImagePanel extends JPanel {
 		}
 		
 	}
+	
 
 }

@@ -2,6 +2,7 @@ package ImgMan;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -24,20 +25,18 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 	private ArrayBlockingQueue<File> FileBlockingQueue;
 	private JLabel resultLabel = new JLabel();
 	private String OUTPUT_FOLDER = "\\BIP_OUT\\" ;
-	private float hue;
-	private float saturation;
-	private float brightness;
+	EnhancedImage enhancedImage;
 	private String savePath;
 	private JProgressBar progressBar;
 	private int progress;
 	private Component component;
+	float[] hsb;
 		
-	public BatchImgWriter( ArrayBlockingQueue<File> FileBlockingQueue, float hue, float saturation, float brightness, 
+	public BatchImgWriter( ArrayBlockingQueue<File> FileBlockingQueue, EnhancedImage enhancedImage,
 			Component component, String savePath){
+		 hsb = enhancedImage.getHSB();
 		this.FileBlockingQueue =  FileBlockingQueue;
-		this.hue = hue;
-		this.saturation = saturation;
-		this.brightness = brightness;
+		this.enhancedImage = enhancedImage;
 		this.savePath = savePath;
 //		progressBar = bar;
 //		progressBar.setMaximum(FileBlockingQueue.size()/4);
@@ -84,12 +83,11 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
     	 		return null; 
      	 	
 	        	 File file = FileBlockingQueue.remove();
-	        	 BufferedImage image;
+
 	     		try {
-	     			image = ImageIO.read(new File(file.getAbsoluteFile().toString()));
-	     			image = getEnhancedImagesHSB(image);
-	     			ImageIO.write(image, "png", new File( savePath + OUTPUT_FOLDER+ file.getName() ));
-//	     			incrementProgress();
+	     			
+	    			BufferedImage in = ImageIO.read(new File(file.getAbsoluteFile().toString()));    			
+	     			ImageIO.write( EnhancedImage.getEnhancedImagesRaster(in, hsb), "PNG", new File( savePath + OUTPUT_FOLDER+ file.getName() ));
 
 	     			} catch (IOException e) {
 	    			e.printStackTrace();
@@ -126,44 +124,64 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 		return null;
 	}
 	
-		public BufferedImage getEnhancedImagesHSB(BufferedImage image){
-		int height = image.getHeight();
-		int width = image.getWidth();
-
-		int[] originalPixels = image.getRGB(0,0, width, height, null, 0,width);	
-		BufferedImage newImage = new BufferedImage(width, height,  BufferedImage.TYPE_INT_RGB);
-	
-		float[] hsb = new float[]{0,0,0};
-		
-		for (int i = 0; i < originalPixels.length; i++)
-		{
-			Color c = new Color( originalPixels[i]);
-			int red =c.getRed();
-			int green = c.getGreen();
-			int blue = c.getBlue();
-
-			hsb = Color.RGBtoHSB(red, green, blue, hsb);
-			
-			 hsb[0] = (float)(hsb[0] +( hue/360.0));//hue
-			
-			hsb[1] *=  (saturation/100);
-			  if(hsb[1] > 1.0){
-				  hsb[1] = (float)1.0;
-			  }
-			
-			hsb[2] *=  (brightness/100);
-			  if(hsb[2] > 1.0) 
-				  {hsb[2] = (float)1.0;}
-	
-			  originalPixels[i] = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-
-		}
-		
-		newImage.setRGB(0, 0, width, height, originalPixels, 0, width);
-
-		return newImage;
-	}
-	
-	
+//		public BufferedImage getEnhancedImagesHSB(BufferedImage image){
+//		int height = image.getHeight();
+//		int width = image.getWidth();
+//
+//		int[] originalPixels = image.getRGB(0,0, width, height, null, 0,width);	
+//		BufferedImage newImage = new BufferedImage(width, height,  BufferedImage.TYPE_INT_RGB);
+//	
+//		float[] hsb = new float[]{0,0,0,0};
+//		
+//		for (int i = 0; i < originalPixels.length; i++)
+//		{
+//			Color c = new Color( originalPixels[i]);
+//			int red =c.getRed();
+//			int green = c.getGreen();
+//			int blue = c.getBlue();
+//			
+//		
+//			hsb = Color.RGBtoHSB(red, green, blue, hsb);
+//			hsb[ 3 ] = c.getAlpha() / 255f;
+//			
+//			 hsb[0] = (float)(hsb[0] +( hue/360.0));//hue
+//			
+//			hsb[1] *=  (saturation/100);
+//			  if(hsb[1] > 1.0){
+//				  hsb[1] = (float)1.0;
+//			  }
+//			
+//			hsb[2] *=  (brightness/100);
+//			  if(hsb[2] > 1.0) 
+//				  {hsb[2] = (float)1.0;}
+//
+//			int newargb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]) & 0xffffff;
+//			newargb |= (int) ( hsb[ 3 ] * 255 ) << 24;
+//			Color cl = new Color(newargb, true);
+//			
+//			int col = 0;
+//			
+//			col |= newargb;
+//
+//			col |= newargb << 16;
+//
+//			col |= newargb << 8;
+//
+//			col |= newargb;
+//
+//			
+////			originalPixels[i] = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+////			originalPixels[i] = cl.getRGB();
+////			originalPixels[i]|= (int) ( hsb[ 3 ] * 255 ) << 24;
+//			originalPixels[i]= newargb;
+//
+//		}
+//		
+//		newImage.setRGB(0, 0, width, height, originalPixels, 0, width);
+//
+//		return newImage;
+//	}
+//	
+//	
 
 }
