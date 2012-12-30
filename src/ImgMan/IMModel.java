@@ -45,7 +45,7 @@ public class IMModel extends Observable {
 		}
 		BufferedImage in;
 		try {
-			in = ImageIO.read(imageFileList.get(1).getAbsoluteFile());
+			in = ImageIO.read(imageFileList.get(0).getAbsoluteFile());
 			BufferedImage imagen = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = imagen.createGraphics();
 			g.drawImage(in, 0, 0, null);
@@ -60,7 +60,7 @@ public class IMModel extends Observable {
 		
 
 		setChanged();
-		notifyObservers(sourceFolder);
+		notifyObservers();
 	}
 	
 	public ArrayList<File> getImageList(){

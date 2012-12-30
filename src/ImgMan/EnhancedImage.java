@@ -20,12 +20,8 @@ public class EnhancedImage {
 	private float brightness;
 	private float saturation;
 	private float hue;
-	
 	private int contrast;
 	BufferedImage newImage;
-	int[] originalPixels;
-	int[] enhancedImagePixels;
-
 	
 	public EnhancedImage(BufferedImage image){
 		this.image = image;
@@ -171,67 +167,67 @@ public class EnhancedImage {
 	    return newImage;
 	}
 	
-	//with out HSB - old algorithm for brightness and contrast
-	public BufferedImage getEnhancedImages(){
-		
-		int height = image.getHeight();
-		int width = image.getWidth();
-		int[] contrast_lookup = new int[256];
-		double newValue = 0;
-		double c =( (255.0 + contrast) / 255.0)  ;
-		
-		c *= c;
-
-		for (int i = 0; i < 256; i++)
-		{
-		    newValue = (double)i;
-		    newValue /= 255.0;
-		    newValue -= 0.5;
-		    newValue *= c;
-		    newValue += 0.5;
-		    newValue *= 255;
-		    newValue +=brightness;
-
-		    if (newValue < 0)
-		        newValue = 0;
-		    if (newValue > 255)
-		        newValue = 255;
-		    contrast_lookup[i] = (int)newValue;
-		}
-			
-		for (int i = 0; i < originalPixels.length; i++)
-		{
-			int cc = originalPixels[i];
-			int red = (cc >> 16) & 0xFF;
-			int green = (cc >> 8) & 0xFF;
-			int blue = cc & 0xFF;
-			
-//			cc |= (cc >> 16) & 0xFF;
-//			cc |= (cc >> 8) & 0xFF;
-//			cc |=  cc & 0xFF;
-//			cc |=  (cc >> 24) & 0xFF;
-			
-//			cc = (cc & ~(0xFF << 24)) ;
+//	//with out HSB - old algorithm for brightness and contrast
+//	public BufferedImage getEnhancedImages(){
+//		
+//		int height = image.getHeight();
+//		int width = image.getWidth();
+//		int[] contrast_lookup = new int[256];
+//		double newValue = 0;
+//		double c =( (255.0 + contrast) / 255.0)  ;
+//		
+//		c *= c;
 //
-//			cc = (cc & ~(0xFF << 16)) | contrast_lookup[red];
+//		for (int i = 0; i < 256; i++)
+//		{
+//		    newValue = (double)i;
+//		    newValue /= 255.0;
+//		    newValue -= 0.5;
+//		    newValue *= c;
+//		    newValue += 0.5;
+//		    newValue *= 255;
+//		    newValue +=brightness;
 //
-//			cc = (cc & ~(0xFF << 8)) | contrast_lookup[green];
+//		    if (newValue < 0)
+//		        newValue = 0;
+//		    if (newValue > 255)
+//		        newValue = 255;
+//		    contrast_lookup[i] = (int)newValue;
+//		}
+//			
+//		for (int i = 0; i < originalPixels.length; i++)
+//		{
+//			int cc = originalPixels[i];
+//			int red = (cc >> 16) & 0xFF;
+//			int green = (cc >> 8) & 0xFF;
+//			int blue = cc & 0xFF;
+//			
+////			cc |= (cc >> 16) & 0xFF;
+////			cc |= (cc >> 8) & 0xFF;
+////			cc |=  cc & 0xFF;
+////			cc |=  (cc >> 24) & 0xFF;
+//			
+////			cc = (cc & ~(0xFF << 24)) ;
+////
+////			cc = (cc & ~(0xFF << 16)) | contrast_lookup[red];
+////
+////			cc = (cc & ~(0xFF << 8)) | contrast_lookup[green];
+////
+////			cc = (cc & ~0xFF) | contrast_lookup[blue];
+//			
+//			int tred = contrast_lookup[red];
+//			int tgreen = contrast_lookup[green];
+//			int tblue = contrast_lookup[blue];
+//			Color newcol = new Color(tred, tgreen, tblue);
+//			enhancedImagePixels[i] = newcol.getRGB();
+////			enhancedImagePixels[i] = cc;
 //
-//			cc = (cc & ~0xFF) | contrast_lookup[blue];
-			
-			int tred = contrast_lookup[red];
-			int tgreen = contrast_lookup[green];
-			int tblue = contrast_lookup[blue];
-			Color newcol = new Color(tred, tgreen, tblue);
-			enhancedImagePixels[i] = newcol.getRGB();
-//			enhancedImagePixels[i] = cc;
-
-		}
-		
-		newImage.setRGB(0, 0, width, height, enhancedImagePixels, 0, width);
-		
-		
-		return newImage;
-	}
+//		}
+//		
+//		newImage.setRGB(0, 0, width, height, enhancedImagePixels, 0, width);
+//		
+//		
+//		return newImage;
+//	}
 	
 }

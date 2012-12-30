@@ -76,8 +76,7 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 		 		return null; 
 			
 		 	future[i] = (executor.submit(new Callable<String>() {
-	         public String call() throws InterruptedException {
-			System.out.println("here");
+	        public String call() throws InterruptedException {
 			
      	 	if(FileBlockingQueue.isEmpty())
     	 		return null; 
@@ -124,64 +123,4 @@ public class BatchImgWriter  extends SwingWorker<Void, Void>{
 		return null;
 	}
 	
-//		public BufferedImage getEnhancedImagesHSB(BufferedImage image){
-//		int height = image.getHeight();
-//		int width = image.getWidth();
-//
-//		int[] originalPixels = image.getRGB(0,0, width, height, null, 0,width);	
-//		BufferedImage newImage = new BufferedImage(width, height,  BufferedImage.TYPE_INT_RGB);
-//	
-//		float[] hsb = new float[]{0,0,0,0};
-//		
-//		for (int i = 0; i < originalPixels.length; i++)
-//		{
-//			Color c = new Color( originalPixels[i]);
-//			int red =c.getRed();
-//			int green = c.getGreen();
-//			int blue = c.getBlue();
-//			
-//		
-//			hsb = Color.RGBtoHSB(red, green, blue, hsb);
-//			hsb[ 3 ] = c.getAlpha() / 255f;
-//			
-//			 hsb[0] = (float)(hsb[0] +( hue/360.0));//hue
-//			
-//			hsb[1] *=  (saturation/100);
-//			  if(hsb[1] > 1.0){
-//				  hsb[1] = (float)1.0;
-//			  }
-//			
-//			hsb[2] *=  (brightness/100);
-//			  if(hsb[2] > 1.0) 
-//				  {hsb[2] = (float)1.0;}
-//
-//			int newargb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]) & 0xffffff;
-//			newargb |= (int) ( hsb[ 3 ] * 255 ) << 24;
-//			Color cl = new Color(newargb, true);
-//			
-//			int col = 0;
-//			
-//			col |= newargb;
-//
-//			col |= newargb << 16;
-//
-//			col |= newargb << 8;
-//
-//			col |= newargb;
-//
-//			
-////			originalPixels[i] = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-////			originalPixels[i] = cl.getRGB();
-////			originalPixels[i]|= (int) ( hsb[ 3 ] * 255 ) << 24;
-//			originalPixels[i]= newargb;
-//
-//		}
-//		
-//		newImage.setRGB(0, 0, width, height, originalPixels, 0, width);
-//
-//		return newImage;
-//	}
-//	
-//	
-
 }

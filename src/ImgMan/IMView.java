@@ -20,6 +20,11 @@ import javax.swing.event.ChangeListener;
 public class IMView extends JFrame  implements Observer {
 
 	JButton selectIMGFolder = new JButton("Select Folder");
+	JTextField inputDirectoryTxt = new JTextField(25);
+	
+	JButton saveIMGFolder = new JButton("Ouput Folder");
+	JTextField saveDirectoryTxt = new JTextField(25);
+	
 	ImagePanel originalImage;
 	//Labels and sliders to control image
 	JLabel brightnessLabel = new JLabel("Brightness");
@@ -36,23 +41,28 @@ public class IMView extends JFrame  implements Observer {
     
 	JLabel randomLabel = new JLabel("Random");
 	
-	JButton processButton = new JButton("Process images");
+	JButton processButton = new JButton("Process Images");
+	JButton maximizeButton = new JButton("Maximize Image");
 	
 	JLabel progressBarLabel = new JLabel("Progress: ");
 	JProgressBar progressBar = new JProgressBar();
 	JLabel totalTimeLabel = new JLabel("Process Time: ");
 	
-    
-   
+    //menubar used to show submenus for different filters
+	JMenuBar menubar = new JMenuBar();
+	JMenu file = new JMenu("File");
+	JMenu filter = new JMenu("Filter");
+	JMenuItem greyscale = new JMenuItem("Greyscale");
+	
     IMModel model;
 	public IMView (IMModel model){
 		super("Image manipulation");
-		
+		this.model = model;
 		JPanel mainJPanel = new JPanel();
 		
 		mainJPanel.setLayout(new GridBagLayout());
 		
-	
+		
 		
 		brightnessSlider.setMajorTickSpacing(50);
 		brightnessSlider.setPaintLabels(true);
@@ -76,56 +86,74 @@ public class IMView extends JFrame  implements Observer {
 		hueSlider.setPaintTicks(true);
 		
 		progressBar.setStringPainted(true);
-
-
+		inputDirectoryTxt.setEnabled(false);
+		
 		originalImage = new ImagePanel();
 
 		//Define left panel grifBagContraints
 		GridBagConstraints gc = new GridBagConstraints();
-        
+	    JPanel savePanel = new JPanel();
+
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.weightx = 0.5;
         gc.gridx = 0;
         gc.gridy = 0;
-        mainJPanel.add(selectIMGFolder, gc);
-        
+        savePanel.add(selectIMGFolder, gc);
+
+        gc.gridx = 1;
+        gc.gridy = 0;
+        savePanel.add(inputDirectoryTxt, gc);
+//
+   
         gc.gridx = 0;
         gc.gridy = 1;
         mainJPanel.add(originalImage, gc);
         
-//        gc.weighty = 1;
+//        gc.gridx = 0;
+//        gc.gridy = 2;
+//        mainJPanel.add(saveIMGFolder, gc);       
+//  
+//        gc.gridx = 1;
+//        gc.gridy = 2;
+//        mainJPanel.add(saveDirectoryTxt, gc);
+                
+        gc.anchor = GridBagConstraints.FIRST_LINE_START;
+        gc.weighty = 1;
         gc.gridx = 0;
         gc.gridy = 2;
         mainJPanel.add(randomLabel, gc);
         
+        gc = new GridBagConstraints();
+        JPanel bottomImagePanel = new JPanel();
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gc.weighty = 1;
+		gc.weightx = 0.5;
         gc.gridx = 0;
         gc.gridy = 3;
-        mainJPanel.add(processButton, gc);
+        bottomImagePanel.add(processButton, gc);
         
-//        gc.anchor = GridBagConstraints.LAST_LINE_START;
-//        gc.weighty = 1;
-//        gc.gridx = 0;
-//        gc.gridy = 4;
-//        mainJPanel.add(progressBar, gc);
-//        
+        gc.weighty = 2;
+		gc.weightx = 0.5;
+        gc.gridx = 1;
+        gc.gridy = 3;
+        bottomImagePanel.add(maximizeButton, gc);
+     
         JPanel progressPanel = new JPanel();
 		gc = new GridBagConstraints();
+		
+
         
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.weightx = 0.5;
         gc.gridx = 0;
         gc.gridy = 4;
         progressPanel.add(progressBarLabel, gc);
         
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+
 		gc.weightx = 0.5;
         gc.gridx = 1;
         gc.gridy = 4;
         progressPanel.add(progressBar, gc);
         
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+
 		gc.weightx = 0.5;
         gc.gridx = 2;
         gc.gridy = 4;
@@ -183,10 +211,30 @@ public class IMView extends JFrame  implements Observer {
         
         gc = new GridBagConstraints();
         gc.gridx = 0;
+        gc.gridy = 3;
+        gc.anchor = GridBagConstraints.NORTHWEST;
+        mainJPanel.add(bottomImagePanel, gc);
+        
+        gc = new GridBagConstraints();
+        gc.gridx = 0;
         gc.gridy = 4;
         gc.anchor = GridBagConstraints.NORTHWEST;
         mainJPanel.add(progressPanel, gc);
+        
+        gc = new GridBagConstraints();
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.anchor = GridBagConstraints.NORTHWEST;
+        mainJPanel.add(savePanel, gc);
 
+        
+        //Menu bar and submenu
+        filter.add(greyscale);
+        menubar.add(file);
+        menubar.add(filter);
+        
+        
+        this.setJMenuBar(menubar);
 		this.add(mainJPanel);
 		this.setVisible(true);
 		this.setPreferredSize(new Dimension(800, 600));
@@ -223,6 +271,10 @@ public class IMView extends JFrame  implements Observer {
 		processButton.addActionListener(lis);
 	}
 	
+	public void addGreyScaleFilterLis(ActionListener lis){
+		greyscale.addActionListener(lis);
+	}
+	
 	public JProgressBar getProgressbar(){
 		return progressBar;
 	}
@@ -233,10 +285,7 @@ public class IMView extends JFrame  implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-//		System.out.println(((IMModel)o).getImageList().get(0).getAbsolutePath());
-//		System.out.println("awdwad");
-//		originalImage.setImage(((IMModel)o).getFirstImage());
-//		originalImage.repaint();
+		inputDirectoryTxt.setText(model.getSourceFolder());
 		
 	}
 	

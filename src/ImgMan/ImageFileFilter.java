@@ -9,17 +9,12 @@ public class ImageFileFilter implements FileFilter {
 	
 	@Override
 	public boolean accept(File file) {
-		
 		for(String ext : imageExtentions){
 			if(file.isFile()){
-				if(file.getName().endsWith(ext))
+				if(file.getName().toLowerCase().endsWith(ext))
 					return true;
 			}
 		}
-		
 		return false;
 	}
-	
-	
-
 }
