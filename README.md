@@ -5,11 +5,11 @@ These same settings can then be applied to multiple different images in the same
 
 Current feature:
 * Adjust HSB values of an image and apply the same settings to all images in same folder
-* Full PNG support - both read/write
+* Full PNG/JPG support - both read/write
 * Multithread support for fast output
 
 Future: 
-* JPG, GIF and BMP support both read/write
+* GIF and BMP support both read/write
 * Common filters such as blur and greyscale
 * Select output folder
 * Re-work UI to make it more user friendly
