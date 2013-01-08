@@ -7,6 +7,7 @@ Current feature:
 * Adjust HSB values of an image and apply the same settings to all images in same folder
 * Full PNG/JPG support - both read/write
 * Multithread support for fast output
+* Resize Images to desired width/height
 
 Future: 
 * GIF and BMP support both read/write
@@ -14,9 +15,10 @@ Future:
 * Select output folder
 * Re-work UI to make it more user friendly
 * Improve performance 
+* Set amount of threads to use
 
 Bugs: 
 *
 
 Performance:
-* 100 HD png images : 35-40secs on quad core Q6600 and 4GB ram.
+* 100 of varying resolution png images : 35-40secs on quad core Q6600, 7200rpm HD and 4GB ram
