@@ -32,8 +32,16 @@ public class EnhancedImage {
 		newImage = new BufferedImage(width, height,  BufferedImage.TYPE_INT_ARGB  );		
 	}
 	
+	public void setOriginalImage(BufferedImage image){
+		this.image = image;
+	}
+	
 	public BufferedImage getOriginalImage(){
 		return image;
+	}
+	
+	public void setnewImage(BufferedImage image){
+		this.newImage = image;
 	}
 	
 	public BufferedImage newgetImage(){
@@ -118,7 +126,7 @@ public class EnhancedImage {
 	
 	
 	public BufferedImage getEnhancedImagesHSB(){
-		WritableRaster raster = image.getRaster();
+//		WritableRaster raster = image.getRaster();
 		WritableRaster newRaster = newImage.getRaster();
 		
 		int width = image.getWidth();

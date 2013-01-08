@@ -11,6 +11,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -32,7 +33,7 @@ public class IMController  {
 	ChangeListener ChangeHue = new ChangeHue();
 	ActionListener writeImages = new WriteNewImages();
 	ActionListener greyScaleFilter = new GreyScaleChange();
-	
+	ActionListener resizeComboBox = new ResizeImageComboBox();
 	//Dialog window for filters
 	FilterDialog filterDialog;
 	
@@ -52,6 +53,7 @@ public class IMController  {
 		view.addChangeHue(ChangeHue);
 		view.addImagesWriteLis(writeImages);
 		view.addGreyScaleFilterLis(greyScaleFilter);
+		view.addResizeComboBoxLis(resizeComboBox);
 		
 	}
 	
@@ -59,7 +61,11 @@ public class IMController  {
 
 	
 	
-
+	/**
+	 * 
+	 * @author Sundeep
+	 * Actionlistener to write images using threads
+	 */
 	public class WriteNewImages implements ActionListener{
 
 		@Override
@@ -75,7 +81,14 @@ public class IMController  {
 				}
 			}
 			
-			BatchImgWriter imgWriter = new BatchImgWriter(abq,model.getEnhancedImage(),  view, model.getSourceFolder());
+			BatchImgWriter imgWriter = new BatchImgWriter(abq,model, view);
+			
+			if(model.imageResizable()) {
+				model.setResizeWidth(view.getWidthResizeData());
+				model.setResizeHeight(view.geHeightResizeData());
+				imgWriter.setImageResizable(true);
+				imgWriter.setWidthHeight(view.getWidthResizeData(), view.geHeightResizeData());
+			}
 			imgWriter.execute();
 		}
 		
@@ -94,6 +107,7 @@ public class IMController  {
 			if(returnVal == JFileChooser.APPROVE_OPTION){
 			model.setNewSourceFolder(fileBrowser.getSelectedFile().getAbsolutePath(), filter);
 			view.getImagePanel().setImage(model.getEnhancedImage().getOriginalImage());
+			view.getImagePanel().repaint();
 			}
 
 		}
@@ -162,13 +176,30 @@ public class IMController  {
 
 	}
 	
+	public class ResizeImageComboBox implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox resize = ((JComboBox)e.getSource());
+			if(resize.getSelectedItem() == "Resize Image's"){
+				view.getwidthJTextField().setEnabled(true);
+				view.getheightJTextField().setEnabled(true);
+				model.setIsResizable(true);
+			}else{
+				view.getwidthJTextField().setEnabled(false);
+				view.getheightJTextField().setEnabled(false);
+				model.setIsResizable(false);
+			}
+		}
+		
+	}
+	
 	public class GreyScaleChange implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (model.getEnhancedImage() != null){
-			BufferedImage im =  model.getEnhancedImage().getOriginalImage();
-			gsFilter = new GreyScaleFilter(im.getWidth(), im.getHeight());
+			gsFilter = new GreyScaleFilter(view, model);
 			jDialogFilter(gsFilter);
 			}
 		}
@@ -177,41 +208,17 @@ public class IMController  {
 	
 	public void jDialogFilter(final IFilterEffect filter){
 		
-//		JDialog filterDialog = new JDialog(view, "Filter");
-//		filterDialog.setSize(new Dimension(300,150));
-//		JOptionPane optionPane = new JOptionPane();
-//		filterDialog.setSize(300,150);
-//		
-		JSlider filterSlider = new JSlider(0,100);
-//		
-//		optionPane.setMessage(new Object[] { "Select a value: ", filterSlider });
-//		optionPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-//		optionPane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
-//		filterDialog.setContentPane(optionPane);
-
-//		int value = ((Integer)optionPane.getValue()).intValue();
-//		if(value == JOptionPane.CANCEL_OPTION)
-
-		
-		ChangeListener filterListener = new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider slider = ((JSlider)e.getSource());
-			       if (!slider.getValueIsAdjusting()) {
-			    	   System.out.println(slider.getValue());
-			    	   view.getImagePanel().setImage(filter.applyFilter(model.getEnhancedImage().getOriginalImage(), 0));
-			    	   view.getImagePanel().getParent().repaint();	
-			         }  
-			}
-		};
-		
-		filterSlider.addChangeListener(filterListener);
-//		filterDialog.setVisible(true);
-		
-		int result = JOptionPane.showConfirmDialog(view, new Object[]{"Select value:", filterSlider}, "Filter", JOptionPane.OK_CANCEL_OPTION);
-		if (result == JOptionPane.CANCEL_OPTION)
-			System.out.println("works");
+		int result = JOptionPane.showConfirmDialog(view, new Object[] {"Apply Greysclae filter", filter.getComponentList()}, "Filter", JOptionPane.OK_CANCEL_OPTION);
+		if (result == JOptionPane.OK_OPTION){
+			filter.applyFilter();
+			model.getEnhancedImage().setnewImage(filter.getFilteredImage());
+			view.getImagePanel().setImage( filter.getFilteredImage());
+			view.getImagePanel().getParent().repaint();	
+		}else if (result == JOptionPane.CANCEL_OPTION) {
+			model.getEnhancedImage().setnewImage(model.getEnhancedImage().newgetImage());
+			view.getImagePanel().setImage(model.getEnhancedImage().newgetImage());
+			view.getImagePanel().getParent().repaint();	
+		}
 
 	}
 	
